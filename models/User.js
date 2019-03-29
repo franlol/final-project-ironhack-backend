@@ -20,7 +20,7 @@ const userSchema = new Schema({
     },
     profession: {
         type: String,
-        // required: true
+        default: 'Developer',
     },
     description: {
         type: String,

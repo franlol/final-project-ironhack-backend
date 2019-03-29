@@ -12,6 +12,7 @@ require('dotenv').config();
 
 const authRouter = require('./routes/auth');
 const needRouter = require('./routes/need');
+const applyRouter = require('./routes/apply');
 
 mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
@@ -59,6 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', authRouter);
 app.use('/need', needRouter);
+app.use('/apply', applyRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -71,7 +73,7 @@ app.use((err, req, res, next) => {
 
   // only render if the error ocurred before sending the response
   if (!res.headersSent) {
-    const statusError = err.status || '500' 
+    const statusError = err.status || '500'
     res.status(statusError).json(err);
   }
 });

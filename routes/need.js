@@ -77,4 +77,10 @@ router.get('/:id', async (req, res, next) => {
 
 });
 
+router.post('/apply/:id', (req, res, next) => {
+
+    console.log(req.body)
+
+});
+
 module.exports = router;

@@ -7,7 +7,6 @@ const User = require('./User');
 const Need = require('./Need');
 
 const applySchema = new Schema({
-
     need: {
         type: ObjectId,
         ref: 'Need',

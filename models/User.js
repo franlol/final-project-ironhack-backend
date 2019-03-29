@@ -34,6 +34,10 @@ const userSchema = new Schema({
         type: Number,
         default: 0
     },
+    rate: {
+        type: Number,
+        default: 10
+    },
     needs: {
         type: [ObjectId],
         defailt: [],

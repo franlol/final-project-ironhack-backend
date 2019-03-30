@@ -8,8 +8,9 @@ const Apply = require('../models/Apply');
 
 const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/middlewares');
 
+// Add new apply
 router.post('/:id', isLoggedIn(), async (req, res, next) => {
-    const { userId, needId } = req.body;
+    const { userId, needId, comment } = req.body;
 
     if (!userId || !needId || !mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(needId)) {
         res.status(422);
@@ -20,7 +21,8 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
     try {
         const newApply = await Apply.create({
             need: needId,
-            applicant: userId
+            applicant: userId,
+            comment
         });
 
         if (!newApply) {
@@ -48,18 +50,18 @@ router.get('/:id/getall', async (req, res, next) => {
         return;
     }
 
-    // //get all applies array
-    // const applies = await Apply.find({'need': id});
-    
-    // //get each apply.applicant object id in a new array
-    // const allApplicants = applies.map(apply => apply.applicant);
+    try {
+        // getting all applies populated with applicant user
+        const applies = await Apply.find({ 'need': id }).populate('applicant');
 
-    // getting all applies populated with applicant user
-    const applies = await Apply.find({'need': id}).populate('applicant');
+        res.status(200);
+        res.json({ 'allApplies': applies });
+        return;
+        
+    } catch (err) {
+        next(err)
+    }
 
-    res.status(200);
-    res.json({ 'allApplies': applies });
-    return;
 });
 
 module.exports = router;

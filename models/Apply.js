@@ -22,6 +22,11 @@ const applySchema = new Schema(
             type: String,
             required: false,
             default: '',
+        },
+        state: {
+            type: String,
+            required: true,
+            default: 'Pending'
         }
     },
     {

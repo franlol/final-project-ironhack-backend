@@ -23,7 +23,7 @@ const applySchema = new Schema(
             required: false,
             default: '',
         },
-        state: {
+        status: {
             type: String,
             required: true,
             default: 'Pending'

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const Need = require('../models/Need');
 const User = require('../models/User');
+const Apply = require('../models/Apply');
 
 const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/middlewares');
 
@@ -100,22 +101,26 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
         return;
     }
 
-    const need = await Need.findById(needId);
+    try {
+        const need = await Need.findById(needId);
 
-    if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
-        res.status = 403;
-        res.json({ 'message': 'Forbidden' });
+        if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
+            res.status = 403;
+            res.json({ 'message': 'Forbidden' });
+            return;
+        }
+
+        need.title = title;
+        need.rate = rate;
+        need.description = description;
+        need.save();
+
+        res.status(200);
+        res.json(need);
         return;
+    } catch (err) {
+        next(err)
     }
-
-    need.title = title;
-    need.rate = rate;
-    need.description = description;
-    need.save();
-
-    res.status(200);
-    res.json(need);
-    return;
 
 });
 
@@ -129,20 +134,26 @@ router.delete('/:id', async (req, res, next) => {
         return;
     }
 
-    const need = await Need.findById({ _id: needId });
+    try {
+        const need = await Need.findById({ _id: needId });
 
-    if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
-        res.status = 403;
-        res.json({ 'message': 'Forbidden' });
+        if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
+            res.status = 403;
+            res.json({ 'message': 'Forbidden' });
+            return;
+        }
+
+        need.remove();
+
+        // After removing a need, I remove all applies relationships
+        await Apply.find({ 'need': needId }).deleteMany();
+
+        res.status(200);
+        res.json({ 'message': 'OK' });
         return;
+    } catch (err) {
+        next(err)
     }
-
-    need.remove();
-
-    res.status(200);
-    res.json({'message': 'OK'});
-    return;
-
 
 });
 

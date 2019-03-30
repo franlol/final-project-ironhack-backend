@@ -12,7 +12,7 @@ const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/midd
     CREATE:      POST   /need/add
     READ -20:    GET    /need/latest
     READ by id:  GET    /need/:id
-    UPDATE:      POST   /need/:id  -> todo PUT
+    UPDATE:      PUT   /need/:id
     DELETE:      DELETE /need/:id
 */
 
@@ -91,7 +91,7 @@ router.get('/:id', isLoggedIn(), async (req, res, next) => {
 
 // edit need
 // TODO check: req.body OR params? if is body I dont need :id
-router.post('/:id', isLoggedIn(), async (req, res, next) => {
+router.put('/:id', isLoggedIn(), async (req, res, next) => {
     const { userId } = req.body;
     const { needId, title, rate, description } = req.body.need;
 
@@ -119,7 +119,7 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
         res.json(need);
         return;
     } catch (err) {
-        next(err)
+        next(err);
     }
 
 });
@@ -146,13 +146,13 @@ router.delete('/:id', async (req, res, next) => {
         need.remove();
 
         // After removing a need, I remove all applies relationships
-        await Apply.find({ 'need': needId }).deleteMany();
+        await Apply.find({ 'need': needId }).deleteMany(); // remove here is marked as deprecated
 
         res.status(200);
         res.json({ 'message': 'OK' });
         return;
     } catch (err) {
-        next(err)
+        next(err);
     }
 
 });

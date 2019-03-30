@@ -28,7 +28,7 @@ const userSchema = new Schema({
     },
     photo: {
         type: String,
-        default: 'https://image.flaticon.com/icons/png/512/78/78373.png'
+        default: 'https://qsf.fs.quoracdn.net/-3-images.new_grid.profile_pic_anon.png-26-da5ea6d307f82722.png'
     },
     rating: {
         type: Number,

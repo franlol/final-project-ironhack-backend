@@ -7,6 +7,14 @@ const User = require('../models/User');
 
 const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/middlewares');
 
+/*
+    CREATE:      POST   /need/add
+    READ -20:    GET    /need/latest
+    READ by id:  GET    /need/:id
+    UPDATE:      POST   /need/:id  -> todo PUT
+    DELETE:      DELETE /need/:id
+*/
+
 // New one
 router.post('/add', isLoggedIn(), async (req, res, next) => {
     const { id, title, rate, description } = req.body;
@@ -81,6 +89,7 @@ router.get('/:id', isLoggedIn(), async (req, res, next) => {
 });
 
 // edit need
+// TODO check: req.body OR params? if is body I dont need :id
 router.post('/:id', isLoggedIn(), async (req, res, next) => {
     const { userId } = req.body;
     const { needId, title, rate, description } = req.body.need;
@@ -110,22 +119,32 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
 
 });
 
+// Delete need
+router.delete('/:id', async (req, res, next) => {
+    const { needId, userId } = req.body;
+
+    if (!needId || !mongoose.Types.ObjectId.isValid(needId)) {
+        res.status(422);
+        res.json({ 'message': 'Unprocessable Entity' });
+        return;
+    }
+
+    const need = await Need.findById({ _id: needId });
+
+    if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
+        res.status = 403;
+        res.json({ 'message': 'Forbidden' });
+        return;
+    }
+
+    need.remove();
+
+    res.status(200);
+    res.json({'message': 'OK'});
+    return;
+
+
+});
+
 module.exports = router;
-
-// { isActive: true,
-//     _id: 5c9d212b641885274272858f,
-//     owner: 5c9d074c9f38250f955ec0a7,
-//     title: 'test title',
-//     rate: 123,
-//     description: 'test desc',
-//     created_at: 2019-03-28T19:31:55.014Z,
-//     updated_at: 2019-03-28T19:31:55.014Z,
-//     __v: 0 }
-
-
-
-// { needId: '5c9e8688d140cc0e8ae0f120',
-//   title: '1233',
-//   rate: '123',
-//   description: '21331232321' }
 

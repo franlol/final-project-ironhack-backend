@@ -19,7 +19,7 @@ const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/midd
 // New one
 router.post('/add', isLoggedIn(), async (req, res, next) => {
     const { id, title, rate, description, tags } = req.body;
-console.log(req.body)
+
     if (!id || !title || !rate || !description || !mongoose.Types.ObjectId.isValid(id)) {
         res.status(422);
         res.json({ 'message': 'Unprocessable Entity' });
@@ -93,7 +93,7 @@ router.get('/:id', isLoggedIn(), async (req, res, next) => {
 // TODO check: req.body OR params? if is body I dont need :id
 router.put('/:id', isLoggedIn(), async (req, res, next) => {
     const { userId } = req.body;
-    const { needId, title, rate, description } = req.body.need;
+    const { needId, title, rate, description, tags } = req.body.need;
 
     if (!userId || !needId || !title || !rate || !description || !mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(needId)) {
         res.status(422);
@@ -112,6 +112,7 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
 
         need.title = title;
         need.rate = rate;
+        need.tags = tags;
         need.description = description;
         need.save();
 

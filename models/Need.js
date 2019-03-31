@@ -19,6 +19,10 @@ const needSchema = new Schema({
         type: Number,
         required: true
     },
+    tags: {
+        type: [String],
+        required: false
+    },
     description: {
         type: String,
         required: true

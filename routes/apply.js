@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Need = require('../models/Need');
-const User = require('../models/User');
+// const User = require('../models/User');
 const Apply = require('../models/Apply');
 
 const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/middlewares');
@@ -40,7 +40,7 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
 
 });
 
-router.get('/:id/getall', async (req, res, next) => {
+router.get('/:id/getall', isLoggedIn(), async (req, res, next) => {
 
     const { id } = req.params;
 
@@ -57,11 +57,50 @@ router.get('/:id/getall', async (req, res, next) => {
         res.status(200);
         res.json({ 'allApplies': applies });
         return;
-        
+
     } catch (err) {
         next(err)
     }
 
 });
+
+// Update Apply status
+router.put('/:id', isLoggedIn(), async (req, res, next) => {
+    const { status, userId, applyId } = req.body;
+
+    const statusCondition = status !== '' || (status !== 'Pending' && status !== 'Accepted' && status !== 'Declined');
+    const idCondition = mongoose.Types.ObjectId.isValid(userId);
+
+    if (!statusCondition || !idCondition) {
+        res.status(422);
+        res.json({ 'message': 'Unprocessable Entity' });
+        return;
+    }
+
+    try {
+        const apply = await Apply.findById(applyId);
+
+        // I get the need to check if needOwner is equals to userId (to dodge postman hackies :D)
+        const need = await Need.findById({ _id: apply.need })
+        
+        if (!mongoose.Types.ObjectId(need.owner).equals(userId)) {
+            res.status = 403;
+            res.json({ 'message': 'Forbidden' });
+            return;
+        }
+
+        apply.status = status;
+        apply.save();
+        console.log(apply)
+
+        res.status(200);
+        res.json({ 'Apply': apply });
+        return;
+
+    } catch (err) {
+        next(err);
+    }
+
+})
 
 module.exports = router;

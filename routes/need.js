@@ -18,8 +18,8 @@ const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/midd
 
 // New one
 router.post('/add', isLoggedIn(), async (req, res, next) => {
-    const { id, title, rate, description } = req.body;
-
+    const { id, title, rate, description, tags } = req.body;
+console.log(req.body)
     if (!id || !title || !rate || !description || !mongoose.Types.ObjectId.isValid(id)) {
         res.status(422);
         res.json({ 'message': 'Unprocessable Entity' });
@@ -34,7 +34,7 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
             return;
         }
 
-        const newNeed = new Need({ owner: id, title, rate, description });
+        const newNeed = new Need({ owner: id, title, rate, description, tags });
         const createdNeed = await newNeed.save();
 
         res.status(200);

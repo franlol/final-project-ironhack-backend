@@ -20,7 +20,7 @@ const needSchema = new Schema({
         required: true
     },
     tags: {
-        type: [String],
+        type: [Object],
         required: false
     },
     description: {

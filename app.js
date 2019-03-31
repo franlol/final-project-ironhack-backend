@@ -13,6 +13,7 @@ require('dotenv').config();
 const authRouter = require('./routes/auth');
 const needRouter = require('./routes/need');
 const applyRouter = require('./routes/apply');
+const searchRouter = require('./routes/search');
 
 mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
@@ -23,7 +24,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 }).catch((error) => {
   console.error(error);
 })
-
 
 const app = express();
 
@@ -61,6 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRouter);
 app.use('/need', needRouter);
 app.use('/apply', applyRouter);
+app.use('/search', searchRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

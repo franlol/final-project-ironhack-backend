@@ -160,7 +160,7 @@ router.delete('/:id', async (req, res, next) => {
 
 router.get('/all/pending', async (req, res, next) => {
     const { userId } = req.query;
-    console.log(userId)
+    // console.log(userId)
 
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
         res.status(422);
@@ -169,20 +169,17 @@ router.get('/all/pending', async (req, res, next) => {
     }
 
     try {
-        // const needs = await Need.find({ owner: userId });
-        const needs = await Apply.find().populate('need');
-        const filteredNeeds = needs.filter((need) => {
-            console.log(need.need.owner)
+        const applies = await Apply.find().populate('need');
 
-        });
 
-        if (needs.length === 0) {
-            res.status(204);
-            // res.json({ 'message': 'No content' }); // Not sending message if 204 :)
-        }
+        // if (needs.length === 0) {
+        //     res.status(204);
+        //     // res.json({ 'message': 'No content' }); // Not sending message if 204 :)
+        // }
 
-        res.status(200);
-        res.json({ needs });
+        // res.status(200);
+        // res.json({ needs });
+        return;
     } catch (err) {
         next(err);
     }
@@ -190,3 +187,14 @@ router.get('/all/pending', async (req, res, next) => {
 
 module.exports = router;
 
+
+
+        // // HEre i get all MY Needs (populated by applies), and there an application without response (pending)
+        // let needsWithResponseLeft = applies.map(apply => {
+        //     if (mongoose.Types.ObjectId(userId).equals(apply.need.owner) && apply.status === 'Pending') {
+        //         return apply.need
+        //     }
+        // });
+        // //because last map returns undefined if the if condition dont being true, i remove that undefineds
+        // needsWithResponseLeft = needsWithResponseLeft.filter(need => need !== undefined);
+        // console.log(needsWithResponseLeft)

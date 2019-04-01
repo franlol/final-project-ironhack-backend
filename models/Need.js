@@ -30,6 +30,10 @@ const needSchema = new Schema({
     isActive: {
         type: Boolean,
         default: true,
+    },
+    waitingResponse: {
+        type: Number,
+        default: 0,
     }
 }, {
         timestamps: {

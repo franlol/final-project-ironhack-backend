@@ -45,6 +45,33 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
 
 });
 
+// Get all Needs (populated) where user applied
+router.get('/applied', isLoggedIn(), async (req, res, next) => {
+    const { userId } = req.query;
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+        res.status(422);
+        res.json({ 'message': 'Unprocessable Entity' });
+        return;
+    }
+
+    try {
+        // getting all applies populated need
+        const allApplies = await Apply.find().populate('applicant').populate('need');
+        //filtering and getting the applies where I applied
+        const appliesWhereIApplied = allApplies.filter(apply => mongoose.Types.ObjectId(apply.applicant._id).equals(userId))
+        // Getting the Needs from populated Apply where I applied.
+        const needs = appliesWhereIApplied.map(apply => apply.need)
+
+        res.status(200);
+        res.json({ needs });
+        return;
+
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.get('/:id/getall', isLoggedIn(), async (req, res, next) => {
 
     const { id } = req.params;
@@ -94,6 +121,7 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
             return;
         }
 
+        // When clicking Accept or Decline, notification counts -1. If you put 'Pending' state, notification counts +1
         need.waitingNotification = status === 'Pending' ? need.waitingNotification + 1 : need.waitingNotification - 1;
         need.save();
 

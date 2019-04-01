@@ -25,6 +25,11 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
             comment
         });
 
+        // When making new apply, I put +1, so the Need have a notification.
+        const need = await Need.findById({ _id: needId });
+        need.waitingNotification = need.waitingNotification + 1;
+        need.save();
+
         if (!newApply) {
             res.status(404);
             res.json({ 'message': 'Apply not valid' });
@@ -80,14 +85,17 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
     try {
         const apply = await Apply.findById(applyId);
 
-        // I get the need to check if needOwner is equals to userId (to dodge postman hackies :D)
+        // I get the need to check if needOwner is equals to userId (to dodge postman hackies :D) and add or remove waiting notification (to show in prof x example)
         const need = await Need.findById({ _id: apply.need })
-        
+
         if (!mongoose.Types.ObjectId(need.owner).equals(userId)) {
             res.status = 403;
             res.json({ 'message': 'Forbidden' });
             return;
         }
+
+        need.waitingNotification = status === 'Pending' ? need.waitingNotification + 1 : need.waitingNotification - 1;
+        need.save();
 
         apply.status = status;
         apply.save();

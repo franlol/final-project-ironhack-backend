@@ -31,7 +31,7 @@ const needSchema = new Schema({
         type: Boolean,
         default: true,
     },
-    waitingResponse: {
+    waitingNotification: {
         type: Number,
         default: 0,
     }

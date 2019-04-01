@@ -24,7 +24,8 @@ const userSchema = new Schema({
     },
     description: {
         type: String,
-        // required: false
+        default: 'This is the default description..',
+        required: false
     },
     photo: {
         type: String,

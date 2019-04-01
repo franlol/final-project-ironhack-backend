@@ -38,6 +38,10 @@ const needSchema = new Schema({
         }
     });
 
+
+needSchema.index({ description: 'text', title: 'text', 'tags.text': 'text' });
+
 const Need = mongoose.model('Need', needSchema);
 
 module.exports = Need;
+

@@ -23,7 +23,7 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
     if (!id || !title || !rate || !description || !mongoose.Types.ObjectId.isValid(id)) {
         res.status(422);
         res.json({ 'message': 'Unprocessable Entity' });
-        return;
+        // return;
     }
 
     try {
@@ -31,7 +31,7 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
         if (!user) {
             res.status(404);
             res.json({ 'message': 'User not valid' });
-            return;
+            // return;
         }
 
         const newNeed = new Need({ owner: id, title, rate, description, tags });
@@ -39,7 +39,7 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
 
         res.status(200);
         res.json({ need: createdNeed });
-        return;
+        // return;
     } catch (err) {
         next(err);
     }

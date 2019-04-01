@@ -158,5 +158,35 @@ router.delete('/:id', async (req, res, next) => {
 
 });
 
+router.get('/all/pending', async (req, res, next) => {
+    const { userId } = req.query;
+    console.log(userId)
+
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+        res.status(422);
+        res.json({ 'message': 'Unprocessable Entity' });
+        return;
+    }
+
+    try {
+        // const needs = await Need.find({ owner: userId });
+        const needs = await Apply.find().populate('need');
+        const filteredNeeds = needs.filter((need) => {
+            console.log(need.need.owner)
+
+        });
+
+        if (needs.length === 0) {
+            res.status(204);
+            // res.json({ 'message': 'No content' }); // Not sending message if 204 :)
+        }
+
+        res.status(200);
+        res.json({ needs });
+    } catch (err) {
+        next(err);
+    }
+})
+
 module.exports = router;
 

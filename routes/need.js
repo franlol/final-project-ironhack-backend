@@ -49,7 +49,7 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
 // getting last 20
 router.get('/latest', isLoggedIn(), async (req, res, next) => {
     try {
-        const latest = await Need.find({ isActive: true }).sort({ 'created_at': -1 }).limit(20);
+        const latest = await Need.find({ isActive: true }).sort({ 'created_at': -1 }).limit(10);
 
         res.status(200);
         res.json({ latest });

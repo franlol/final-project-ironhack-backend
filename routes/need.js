@@ -62,7 +62,27 @@ router.get('/latest', isLoggedIn(), async (req, res, next) => {
 
 });
 
-router.get('/all', async (req, res, next) => {
+// Get all needs
+router.get('/all', isLoggedIn(), async (req, res, next) => {
+
+    try {
+        const needs = await Need.find();
+
+        if (needs.length === 0) {
+            res.status(204);
+            // res.json({ 'message': 'No content' }); // Not sending message if 204 :)
+        }
+
+        res.status(200);
+        res.json({ needs });
+
+    } catch (err) {
+        next(err);
+    }
+});
+
+// Get all from user
+router.get('/all/:id', isLoggedIn(), async (req, res, next) => {
     const { userId } = req.query;
 
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
@@ -85,7 +105,7 @@ router.get('/all', async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-})
+});
 
 // get by id
 router.get('/:id', isLoggedIn(), async (req, res, next) => {

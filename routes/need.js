@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const SocketManager = require('../helpers/SocketManager');
 
 const Need = require('../models/Need');
 const User = require('../models/User');
@@ -36,6 +37,8 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
 
         const newNeed = new Need({ owner: id, title, rate, description, tags });
         const createdNeed = await newNeed.save();
+
+        SocketManager.newNeed();
 
         res.status(200);
         res.json({ need: createdNeed });

@@ -83,7 +83,7 @@ router.get('/private', isLoggedIn(), (req, res, next) => {
   });
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', isLoggedIn(), async (req, res, next) => {
   const { _id, description, photo, profession, rate } = req.body.user;
   const { currentUser } = req.session
 
@@ -110,10 +110,12 @@ router.put('/:id', async (req, res, next) => {
     updatedUser.rate = rate;
     updatedUser.save();
 
+    req.session.currentUser = updatedUser;
+
     res.status(200);
     res.json({ user: updatedUser });
     return;
-    
+
   } catch (err) {
     next(err);
   }
@@ -123,35 +125,3 @@ router.put('/:id', async (req, res, next) => {
 });
 
 module.exports = router;
-
-
-// const { userId } = req.body;
-// const { needId, title, rate, description, tags } = req.body.need;
-
-// if (!userId || !needId || !title || !rate || !description || !mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(needId)) {
-//   res.status(422);
-//   res.json({ 'message': 'Unprocessable Entity' });
-//   return;
-// }
-
-// try {
-//     const need = await Need.findById(needId);
-
-//     if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
-//         res.status = 403;
-//         res.json({ 'message': 'Forbidden' });
-//         return;
-//     }
-
-//     need.title = title;
-//     need.rate = rate;
-//     need.tags = tags;
-//     need.description = description;
-//     need.save();
-
-//     res.status(200);
-//     res.json(need);
-//     return;
-// } catch (err) {
-//     next(err);
-// }

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 
 const User = require('../models/User');
 
@@ -82,4 +83,75 @@ router.get('/private', isLoggedIn(), (req, res, next) => {
   });
 });
 
+router.put('/:id', async (req, res, next) => {
+  const { _id, description, photo, profession, rate } = req.body.user;
+  const { currentUser } = req.session
+
+  if (!_id || !description || !photo || !profession || !rate) {
+    console.log("falta info")
+    res.status(422);
+    res.json({ 'message': 'Unprocessable Entity' });
+    return;
+  }
+
+  if (!mongoose.Types.ObjectId(_id).equals(currentUser._id)) {
+    console.log("ids dif")
+    res.status = 403;
+    res.json({ 'message': 'Forbidden' });
+    return;
+  }
+
+  try {
+    const updatedUser = await User.findById(_id)
+
+    updatedUser.description = description;
+    updatedUser.photo = photo;
+    updatedUser.profession = profession;
+    updatedUser.rate = rate;
+    updatedUser.save();
+
+    res.status(200);
+    res.json({ user: updatedUser });
+    return;
+    
+  } catch (err) {
+    next(err);
+  }
+
+  console.log(req.body.user, req.session.currentUser);
+
+});
+
 module.exports = router;
+
+
+// const { userId } = req.body;
+// const { needId, title, rate, description, tags } = req.body.need;
+
+// if (!userId || !needId || !title || !rate || !description || !mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(needId)) {
+//   res.status(422);
+//   res.json({ 'message': 'Unprocessable Entity' });
+//   return;
+// }
+
+// try {
+//     const need = await Need.findById(needId);
+
+//     if (!mongoose.Types.ObjectId(userId).equals(need.owner)) {
+//         res.status = 403;
+//         res.json({ 'message': 'Forbidden' });
+//         return;
+//     }
+
+//     need.title = title;
+//     need.rate = rate;
+//     need.tags = tags;
+//     need.description = description;
+//     need.save();
+
+//     res.status(200);
+//     res.json(need);
+//     return;
+// } catch (err) {
+//     next(err);
+// }

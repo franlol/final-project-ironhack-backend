@@ -29,7 +29,7 @@ const userSchema = new Schema({
     },
     photo: {
         type: String,
-        default: 'https://qsf.fs.quoracdn.net/-3-images.new_grid.profile_pic_anon.png-26-da5ea6d307f82722.png'
+        default: 'https://firebasestorage.googleapis.com/v0/b/serv-seeker.appspot.com/o/images%2Fprofile.png?alt=media&token=28f5da76-91d8-4352-a05a-af5a188f5613'
     },
     rating: {
         type: Number,

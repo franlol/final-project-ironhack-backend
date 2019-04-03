@@ -127,7 +127,6 @@ router.get('/:id', isLoggedIn(), async (req, res, next) => {
         }
         res.status(404);
         res.json({ 'message': 'Content not found' });
-        return;
     } catch (err) {
         next(err);
     }

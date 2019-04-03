@@ -25,6 +25,10 @@ const userSchema = new Schema({
         default: 'This is the default description..',
         required: false
     },
+    telephone: {
+        type: Number,
+        required: true,
+    },
     photo: {
         type: String,
         default: 'https://firebasestorage.googleapis.com/v0/b/serv-seeker.appspot.com/o/images%2Fprofile.png?alt=media&token=28f5da76-91d8-4352-a05a-af5a188f5613'
@@ -32,11 +36,15 @@ const userSchema = new Schema({
     rating: {
         type: Number,
         //TO DO
-        default: 4.5
+        default: 0
     },
     rate: {
         type: Number,
         default: 18
+    },
+    jobsDone: {
+        type: Number,
+        default: 0,
     },
     // needs: {
     //     type: [ObjectId],
@@ -64,28 +72,12 @@ const userSchema = new Schema({
     //     ref: 'User'
     // }
 }, {
-    timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
-    }
-});
+        timestamps: {
+            createdAt: 'created_at',
+            updatedAt: 'updated_at'
+        }
+    });
 
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
-
-needs
-:
-Array
-jobsDone
-:
-Array
-favorites
-:
-Array
-applies
-:
-Array
-needsDone
-:
-Array

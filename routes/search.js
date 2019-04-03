@@ -12,7 +12,6 @@ router.get('/', isLoggedIn(), async (req, res, next) => {
     try {
         // await Recipe.find({ '$text': { '$search': str } })
         const needs = await Need.find({ '$text': { '$search': search } });
-        console.log(needs)
         if (needs.length === 0) {
             return res.status(204).json({ 'status': 204, 'message': '204 No Content', 'word': search });
         }

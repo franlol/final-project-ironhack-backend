@@ -127,7 +127,6 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
 
         apply.status = status;
         apply.save();
-        console.log(apply)
 
         res.status(200);
         res.json({ 'Apply': apply });

@@ -41,7 +41,7 @@ router.post('/login', isNotLoggedIn(), validationLoggin(), (req, res, next) => {
 });
 
 router.post('/signup', isNotLoggedIn(), validationLoggin(), (req, res, next) => {
-  const { username, password, profession } = req.body;
+  const { username, password, profession, telephone } = req.body;
 
   User.findOne({
     username
@@ -61,6 +61,7 @@ router.post('/signup', isNotLoggedIn(), validationLoggin(), (req, res, next) => 
         username,
         password: hashPass,
         profession,
+        telephone
       });
 
       return newUser.save().then(() => {
@@ -84,10 +85,10 @@ router.get('/private', isLoggedIn(), (req, res, next) => {
 });
 
 router.put('/:id', isLoggedIn(), async (req, res, next) => {
-  const { _id, description, photo, profession, rate } = req.body.user;
+  const { _id, description, photo, profession, rate, telephone } = req.body.user;
   const { currentUser } = req.session
 
-  if (!_id || !description || !photo || !profession || !rate) {
+  if (!_id || !description || !photo || !profession || !rate || !telephone) {
     console.log("falta info")
     res.status(422);
     res.json({ 'message': 'Unprocessable Entity' });
@@ -107,6 +108,7 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
     updatedUser.photo = photo;
     updatedUser.profession = profession;
     updatedUser.rate = rate;
+    updatedUser.telephone = telephone;
     updatedUser.save();
 
     req.session.currentUser = updatedUser;
@@ -118,9 +120,6 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-
-  console.log(req.body.user, req.session.currentUser);
-
 });
 
 module.exports = router;

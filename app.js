@@ -14,6 +14,7 @@ const authRouter = require('./routes/auth');
 const needRouter = require('./routes/need');
 const applyRouter = require('./routes/apply');
 const searchRouter = require('./routes/search');
+const userRouter = require('./routes/user');
 
 mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
@@ -62,6 +63,7 @@ app.use('/auth', authRouter);
 app.use('/need', needRouter);
 app.use('/apply', applyRouter);
 app.use('/search', searchRouter);
+app.use('/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -95,7 +95,6 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
   }
 
   if (!mongoose.Types.ObjectId(_id).equals(currentUser._id)) {
-    console.log("ids dif")
     res.status = 403;
     res.json({ 'message': 'Forbidden' });
     return;

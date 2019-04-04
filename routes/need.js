@@ -35,7 +35,7 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
         
         res.status(200);
         res.json({ need: createdNeed });
-        // return;
+        return;
     } catch (err) {
         next(err);
     }
@@ -123,6 +123,7 @@ router.get('/:id', isLoggedIn(), async (req, res, next) => {
         }
         res.status(404);
         res.json({ 'message': 'Content not found' });
+        return;
     } catch (err) {
         next(err);
     }

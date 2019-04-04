@@ -24,10 +24,13 @@ exports.validationLoggin = () => (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    const err = new Error('Unprocessable Entity');
-    err.status = 422;
-    err.statusMessage = 'Validation error';
-    next(err)
+    res.status(422);
+    res.json({ message: 'Validation error', error: true });
+    return;
+    // const err = new Error('Validation error');
+    // err.status = 422;
+    // err.statusMessage = 'Validation error';
+    // next(err)
   } else {
     next();
   }

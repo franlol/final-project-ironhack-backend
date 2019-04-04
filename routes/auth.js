@@ -14,6 +14,8 @@ router.get('/me', isLoggedIn(), (req, res, next) => {
 router.post('/login', isNotLoggedIn(), validationLoggin(), (req, res, next) => {
   const { username, password } = req.body;
 
+
+
   User.findOne({
     username
   })
@@ -24,17 +26,19 @@ router.post('/login', isNotLoggedIn(), validationLoggin(), (req, res, next) => {
         // err.statusMessage = 'Not Found';
         // next(err)
 
-        res.status(404).json({ message: 'Not Found', error: true });
-
+        res.status(404);
+        res.json({ message: 'Not Found', error: true });
+        return;
       }
       if (bcrypt.compareSync(password, user.password)) {
         req.session.currentUser = user;
-        return res.status(200).json(user);
+        res.status(200);
+        res.json(user);
+        return
       } else {
-        const err = new Error('Unauthorized');
-        err.status = 401;
-        err.statusMessage = 'Unauthorized';
-        next(err);
+        res.status(401);
+        res.json({ message: 'Unauthorized', error: true });
+        return;
       }
     })
     .catch(next);
@@ -52,6 +56,7 @@ router.post('/signup', isNotLoggedIn(), validationLoggin(), (req, res, next) => 
         err.status = 422;
         err.statusMessage = 'username-not-unique';
         return next(err);
+
       }
 
       const salt = bcrypt.genSaltSync(10);

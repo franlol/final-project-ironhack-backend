@@ -14,18 +14,11 @@ router.get('/me', isLoggedIn(), (req, res, next) => {
 router.post('/login', isNotLoggedIn(), validationLoggin(), (req, res, next) => {
   const { username, password } = req.body;
 
-
-
   User.findOne({
     username
   })
     .then((user) => {
       if (!user) {
-        // const err = new Error('Not Found');
-        // err.status = 404;
-        // err.statusMessage = 'Not Found';
-        // next(err)
-
         res.status(404);
         res.json({ message: 'Not Found', error: true });
         return;
@@ -52,11 +45,9 @@ router.post('/signup', isNotLoggedIn(), validationLoggin(), (req, res, next) => 
   }, 'username')
     .then((userExists) => {
       if (userExists) {
-        const err = new Error('Unprocessable Entity');
-        err.status = 422;
-        err.statusMessage = 'username-not-unique';
-        return next(err);
-
+        res.status(422);
+        res.json({ message: 'Unprocessable Entity', error: true });
+        return;
       }
 
       const salt = bcrypt.genSaltSync(10);
@@ -70,10 +61,11 @@ router.post('/signup', isNotLoggedIn(), validationLoggin(), (req, res, next) => 
       });
 
       return newUser.save().then(() => {
-        // TODO delete password 
+        //TODO Delete password
         req.session.currentUser = newUser;
         res.status(200).json(newUser);
       });
+
     })
     .catch(next);
 });

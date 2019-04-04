@@ -2,10 +2,9 @@ exports.isLoggedIn = () => (req, res, next) => {
   if (req.session.currentUser) {
     next();
   } else {
-    const err = new Error('Unauthorized');
-    err.status = 401;
-    err.statusMessage = 'Unauthorized';
-    next(err);
+    res.status(401);
+    res.json({ message: 'Unauthorized' });
+    return;
   }
 };
 
@@ -13,10 +12,9 @@ exports.isNotLoggedIn = () => (req, res, next) => {
   if (!req.session.currentUser) {
     next();
   } else {
-    const err = new Error('Forbidden');
-    err.status = 403;
-    err.statusMessage = 'Forbidden';
-    next(err);
+    res.status(403);
+    res.json({ message: 'Forbidden' })
+    return;
   }
 };
 
@@ -27,10 +25,6 @@ exports.validationLoggin = () => (req, res, next) => {
     res.status(422);
     res.json({ message: 'Validation error', error: true });
     return;
-    // const err = new Error('Validation error');
-    // err.status = 422;
-    // err.statusMessage = 'Validation error';
-    // next(err)
   } else {
     next();
   }

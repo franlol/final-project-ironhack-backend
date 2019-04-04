@@ -9,14 +9,6 @@ const Apply = require('../models/Apply');
 
 const { isLoggedIn, isNotLoggedIn, validationLoggin } = require('../helpers/middlewares');
 
-/*
-    CREATE:      POST   /need/add
-    READ -20:    GET    /need/latest
-    READ by id:  GET    /need/:id
-    UPDATE:      PUT   /need/:id
-    DELETE:      DELETE /need/:id
-*/
-
 // New one
 router.post('/add', isLoggedIn(), async (req, res, next) => {
     const { id, title, rate, description, tags } = req.body;
@@ -32,14 +24,15 @@ router.post('/add', isLoggedIn(), async (req, res, next) => {
         if (!user) {
             res.status(404);
             res.json({ 'message': 'User not valid' });
-            // return;
+            return;
         }
 
         const newNeed = new Need({ owner: id, title, rate, description, tags });
         const createdNeed = await newNeed.save();
 
-        SocketManager.newNeed();
-
+        // Emiting a socket to update homepage
+        SocketManager.homeNewNeed();
+        
         res.status(200);
         res.json({ need: createdNeed });
         // return;
@@ -163,6 +156,11 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
         need.description = description;
         need.save();
 
+        // Emiting a socket to update homepage
+        SocketManager.homeNewNeed();
+        // Emiting a socket to update needDetail
+        SocketManager.editNeed();
+
         res.status(200);
         res.json(need);
         return;
@@ -195,6 +193,11 @@ router.delete('/:id', async (req, res, next) => {
 
         // After removing a need, I remove all applies relationships
         await Apply.find({ 'need': needId }).deleteMany(); // remove here is marked as deprecated
+
+        // Emiting a socket to update homepage
+        SocketManager.homeNewNeed();
+        // If you are checking a Need detail and user delete that Need, this socket is emited to redirect home
+        SocketManager.deleteApply();
 
         res.status(200);
         res.json({ 'message': 'OK' });

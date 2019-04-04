@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const SocketManager = require('../helpers/SocketManager');
 
 const Need = require('../models/Need');
 // const User = require('../models/User');
@@ -35,6 +36,10 @@ router.post('/:id', isLoggedIn(), async (req, res, next) => {
             res.json({ 'message': 'Apply not valid' });
             return;
         }
+
+        // Emiting a socket to update need details after put an apply. TODO namespaces
+        SocketManager.newApply();
+
         res.status(200);
         res.json({ apply: newApply });
         return;
@@ -120,14 +125,17 @@ router.put('/:id', isLoggedIn(), async (req, res, next) => {
             res.json({ 'message': 'Forbidden' });
             return;
         }
-
+        
         // When clicking Accept or Decline, notification counts -1. If you put 'Pending' state, notification counts +1
         need.waitingNotification = status === 'Pending' ? need.waitingNotification + 1 : need.waitingNotification - 1;
         need.save();
-
+        
         apply.status = status;
         apply.save();
-
+        
+        // Emit a socket to update statusbar in applies
+        SocketManager.statusUpdate();
+        
         res.status(200);
         res.json({ 'Apply': apply });
         return;

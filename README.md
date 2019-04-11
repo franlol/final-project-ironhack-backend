@@ -28,10 +28,10 @@ User profile:
 - Map
 - Finish rate system
 
+#Server
 ## Models
 
 User model
-
 ```
 username: String
 email: String
@@ -46,7 +46,6 @@ jobsDone: Number
 ```
 
 Needs model
-
 ```
 owner: ObjectID <ref: User>
 title: String
@@ -57,70 +56,74 @@ isActive: Boolean
 waitingNotification: Number
 ```
 
+Apply model
+```
+need: ObjectId (ref Need)
+applicant: ObjectId (ref User)
+comment: String
+status: String
+```
+
 ## API Endpoints/Backend Routes
 
 //AUTH
 
-- GET /auth/login
+
+- GET /auth/me
 
 - POST /auth/login
   - body:
     - username
     - password
 
-- GET /auth/signup
-
 - POST /auth/signup
-  - body:
-    - username
-    - email
-    - profession
-    - password
-    - createdAt
+    - body:
+        - username
+        - password
+        - profession
+        - telephone
 
 - POST /auth/logout
-  - body: (empty)
+
+- GET /auth/private
+
+- PUT /auth/:id
+    - body
+        - User (Object)
 
 
 //NEEDS
 
-- GET /needs
-    - query (?category=)
-
-- GET /needs/:id
-
-
-- PUT /needs/:id
-    - body:
+- POST /need/add
+    - body
+        - id
         - title
+        - rate
         - description
-        - price
+        - tags
 
-- POST /needs
-    - body:
-        - owner
-        - title
-        - description
-        - price
-        - applicants []
-        - doneBy []
-        - coords
-        - status 1 (active)
-
-- DELETE /needs:id
-    - (empty)
+- GET /need/latest
+- GET /need/all
+- GET /need/all/:id/
+- GET /need/:id
+- PUT /need/:id
+    - body
+        - userId
+        - need
+- DELETE /need/:id
+    - body
+        - needID
+        - userID
 
 ### Git
 
-The url to your repository and to your deployed project
+Deployed project
 
-[Client repository Link](http://github.com)
-[Server repository Link](http://github.com)
+[Deploy link](https://serv-seeker.firebaseapp.com/)
 
-[Deploy Link](http://heroku.com)
 
 ### Slides
 
-The url to your presentation slides
+Presentation slide
 
-[Slides Link](http://slides.com)
+[Slides Link](https://slides.com/franlol/serv-seeker/#/)

@@ -2,66 +2,60 @@
 
 ## Description
 
-Post your services and get help by others.
+Application where the user can post needs and other users can apply.
 
 ## User Stories
 
 -  **404:** As an anon/user I can see a 404 page if I try to reach a page that does not exist so that I know it's my fault
 -  **Signup:** As an anon I can sign up in the platform so that I can start sharing my services and getting help in my needs
 -  **Login:** As a user I can login to the platform so that I can start sharing my services and getting help in my needs
--  **Logout:** As a user I can logout from the platform so no one else can use it
+-  **Logout:** As a user I can logout from the platform
 
 //User
 -  **Add a need** As a user I can add a need so that I can share it with the community and others can offer their services
--  **Have a profile** As a user I want to have a profile, so others can check me.
+-  **Have a profile** As a user I want to have a profile, so that others can check me.
 -  **Check my needs** As a user I want to check my needs, so I can see if some worker applied to them
+-  **Check my applies** As a user I want to check my applies, so that I can track my applies
 
 //Worker
--  **Search needs** As a worker I want to search needs and chat with owner
+-  **Search needs** As a worker I want to search needs
 -  **List of needs** As a worker, I want to see all the needs to apply in those that interest me
 -  **Apply** As a worker, I want to apply to those needs than I can solve
 
 ## Backlog
 
 User profile:
-- user photo
-- map?
-  
-# Server
+- Map
+- Finish rate system
 
 ## Models
 
 User model
 
 ```
-username - String // required
-email - String // required & unique
-Profesion - String //required
-description - String //required
-photo - String
-password - String // required
-rating: Numeric
-jobsDone: []
-
-favorites - [ObjectID<Needs>]
-applies: [ObjectId<Needs>]
-needsDone - [ObjectId<Needs>]
+username: String
+email: String
+password: String
+profession: String
+description: String
+telephone: Number
+photo: String
+rating: Number
+rate: Number
+jobsDone: Number
 ```
 
 Needs model
 
 ```
-owner - ObjectID<User> //required
-title - String //required
-categories - [String] - required
-description - String //required
-price - Numeric
-applicants - [ObjectId<User>]
-doneBy - ObjectId<User>
-coords - 2d
-status - Boolean
+owner: ObjectID <ref: User>
+title: String
+rate: Number
+tags: Array
+description: String
+isActive: Boolean
+waitingNotification: Number
 ```
-
 
 ## API Endpoints/Backend Routes
 
